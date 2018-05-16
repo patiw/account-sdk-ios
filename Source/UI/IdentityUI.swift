@@ -145,7 +145,7 @@ public class IdentityUI {
     // 2. When handling a universal link, the currently presented process (if any) can be retrieved.
     private weak static var presentedIdentityUI: IdentityUI?
 
-    private weak static var updatedTermsCoordinator: UpdatedTermsCoordinator?
+    private static var updatedTermsCoordinator: UpdatedTermsCoordinator?
 
     /**
      Present a screen where the user can review and accept updated terms and conditions.
@@ -183,7 +183,9 @@ public class IdentityUI {
         }
 
         let navigationController = UINavigationController()
-        let input = UpdatedTermsCoordinator.Input(currentUser: user, terms: terms)
+        let input = UpdatedTermsCoordinator.Input(currentUser: user, terms: terms, didDisappear: {
+            self.updatedTermsCoordinator = nil
+        })
 
         self.updatedTermsCoordinator = UpdatedTermsCoordinator(navigationController: navigationController, configuration: configuration)
         self.updatedTermsCoordinator?.start(input: input) { _ in

@@ -25,10 +25,12 @@ struct NavigationSettings {
 
     let cancel: Action?
     let navigateBack: Action?
+    let didDisappear: Action?
 
-    init(cancel: Action? = nil, back: Action? = nil) {
+    init(cancel: Action? = nil, back: Action? = nil, didDisappear: Action? = nil) {
         self.cancel = cancel
         self.navigateBack = back
+        self.didDisappear = didDisappear
     }
 }
 
@@ -136,6 +138,7 @@ class IdentityUIViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        self.navigationSettings.didDisappear?()
     }
 
     @objc private func keyboardDidShow(notification: NSNotification) {

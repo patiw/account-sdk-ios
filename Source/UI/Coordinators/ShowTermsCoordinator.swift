@@ -9,6 +9,7 @@ class ShowTermsCoordinator: FlowCoordinator {
     struct Input {
         let terms: Terms
         let loginFlowVariant: LoginMethod.FlowVariant
+        let didDisappear: (() -> Void)?
     }
 
     enum Output {
@@ -31,6 +32,7 @@ class ShowTermsCoordinator: FlowCoordinator {
         self.showAcceptTermsView(
             for: input.terms,
             loginFlowVariant: input.loginFlowVariant,
+            didDisappear: input.didDisappear,
             completion: completion
         )
     }
@@ -40,13 +42,15 @@ extension ShowTermsCoordinator {
     private func showAcceptTermsView(
         for terms: Terms,
         loginFlowVariant: LoginMethod.FlowVariant,
+        didDisappear: (() -> Void)?,
         completion: @escaping (Output) -> Void
     ) {
         let isFirstViewController = self.navigationController.viewControllers.count == 0
 
         let navigationSettings = NavigationSettings(
             cancel: { completion(.cancel) },
-            back: isFirstViewController ? nil : { completion(.back) }
+            back: isFirstViewController ? nil : { completion(.back) },
+            didDisappear: { didDisappear?() }
         )
         let viewModel = TermsViewModel(
             terms: terms,
